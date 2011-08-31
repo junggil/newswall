@@ -1,6 +1,8 @@
 import cgi
 import feedparser
 
+from tile import TileBox, TilePlanning
+from view import TileView
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -17,25 +19,21 @@ class MainPage(webapp.RequestHandler):
             </body>
           </html>""")
 
-
-class FeedPage(webapp.RequestHandler):
+class FeedBox(webapp.RequestHandler):
     def post(self):
-        try:
-            rss = feedparser.parse(self.request.get('rss_feed'))
-            self.response.out.write('<html><body>' + rss.feed.title)
-            self.response.out.write('<ul>')
-            for feed in rss.entries:
-                self.response.out.write('<li>' + feed.title)
-                if feed.get('summary', None):
-                    self.response.out.write('<ul><li><a href="' + feed.link + '">' + feed.summary + '</a></ul>')
-            self.response.out.write('</ul>')
-            self.response.out.write('</body></html>')
-        except:
-            self.response.out.write('Invalid Feed')
+        rss  = feedparser.parse(self.request.get('rss_feed'))
+        divs = TileView().getDivs()
+        self.response.out.write('<html><body>%(title)s\n' % {'title' : rss.feed.title})
+        for i, div in enumerate(divs):
+            try:
+                self.response.out.write('<div style="%(div)s">%(title)s</div>\n' % {'div' : div, 'title' : rss.entries[i].title})
+            except:
+                self.response.out.write('<div style="%(div)s">%(title)s</div>\n' % {'div' : div, 'title' : 'News-Wall Demo'})
+        self.response.out.write('</body></html>')
 
 application = webapp.WSGIApplication(
                                      [('/', MainPage),
-                                      ('/newswall', FeedPage)],
+                                      ('/newswall', FeedBox)],
                                      debug=True)
 
 def main():
