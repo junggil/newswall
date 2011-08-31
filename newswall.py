@@ -1,7 +1,7 @@
 import cgi
 import feedparser
 
-from tile import TileBox, TilePlanning
+from tile import TileBox
 from view import TileView
 from google.appengine.api import users
 from google.appengine.ext import webapp
