@@ -1,4 +1,4 @@
-from random import randint, triangular as randvar
+from random import randint, choice
 from pprint import pprint as pp
 
 class TileBox(object):
@@ -62,22 +62,16 @@ class TilePlanning(object):
         self.posX, self.posY = tileSize
 
         self.RULES = {'RANDOM'       : self.random,
-                      'WEIGHT_SUM'   : self.weightSum,
-                      'WEIGHT_RAN'   : self.triangular}
+                      'WEIGHT_SUM'   : self.weightSum,}
 
         self.SIZE_WEIGHT = 0.8
 
     def weightSum(self):
         candidates = [(sizeX + 1, sizeY + 1) for sizeX in range(self.posX) for sizeY in range(self.posY) ]
-        getWeigth  = lambda foo, bar: foo * bar - abs(foo - bar)**2
+        getWeigth  = lambda foo, bar: foo * bar - abs(foo - bar)
         sortComp   = lambda foo, bar: getWeigth(*bar) - getWeigth(*foo)
         candidates.sort(sortComp)
         return choice(candidates[:len(candidates) / 2])
-
-    def triangular(self):
-        relX = self.posX == 1 and 1 or int(randvar(1, self.posX, self.SIZE_WEIGHT * self.posX))
-        relY = self.posY == 1 and 1 or int(randvar(1, self.posY, self.SIZE_WEIGHT * self.posY))
-        return (relX, relY)
 
     def random(self):
         return (randint(1, round(self.posX * self.SIZE_WEIGHT)),
@@ -90,7 +84,7 @@ class TilePlanning(object):
             return (1, 1)
 
 if __name__ == '__main__':
-    box = TileBox('WEIGHT_RAN')
+    box = TileBox('WEIGHT_SUM')
 
     import time
     while not box.checkDone():

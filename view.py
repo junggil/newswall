@@ -9,7 +9,7 @@ class TileView(object):
 
     TEMPLATE = 'background: #%(color)s;font-size:%(font)spx;width:%(width)spx;height:%(height)spx;position:absolute;left:%(left)spx;top:%(top)spx;'
     
-    def __init__(self, rule = 'WEIGHT_RAN'):
+    def __init__(self, rule = 'WEIGHT_SUM'):
         box = TileBox(rule)
 
         while not box.checkDone():
