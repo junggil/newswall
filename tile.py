@@ -53,6 +53,10 @@ class TileBox(object):
     def getTrace(self):
         return self.trace
 
+    def getUnitSize(self, fullSize):
+        relX, relY = fullSize
+        return (round(float(relX) / self.HORIZONTAL), round(float(relY) / self.VERTIVAL))
+
 class TilePlanning(object):
     def __init__(self, tileSize):
         self.posX, self.posY = tileSize
