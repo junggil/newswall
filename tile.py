@@ -1,31 +1,44 @@
-from random import randint, choice
+import re
+from random import randint, choice, random as rand
 from pprint import pprint as pp
 
 class TileBox(object):
-    HORIZONTAL  = 10
-    VERTIVAL    = 8
+    BOUNDARY_X, BOUNDARY_Y = (10, 8)
+    UNIT_MAX_X, UNIT_MAX_Y = ( 4, 3)
 
-    def __init__(self, rule):
-        self.canvas     = [['*'] * self.HORIZONTAL for ver in range(self.VERTIVAL)]
+    def __init__(self):
+        self.canvas     = [['*'] * self.BOUNDARY_X for ver in range(self.BOUNDARY_Y)]
         self.css_id     = ord('A')
         self.position   = (0, 0)
         self.trace      = []
-        self.rule       = rule
 
     def move(self):
-        self.position = (randint(0, self.HORIZONTAL- 1), randint(0, self.VERTIVAL - 1))
+        posX, posY = self.position 
+        for tile in self.canvas[posY:]:
+            if '*' not in tile:
+                posY += 1
+            else:
+                posX = ''.join(tile).index('*')
+                break
+
+        self.position = posX, posY
 
     def getTile(self):
         posX, posY = self.position 
-        relX, relY = (self.HORIZONTAL, 1)
+        boxX, boxY = (self.UNIT_MAX_X, 0)
         for tile in self.canvas[posY:]:
             if tile[posX] is not '*':
                 break
             else:
-                relY = relY + 1
-                relX = min(relX, ''.join(tile[posX:]).rindex('*') + 1)
-        
-        return TilePlanning((relX, relY)).doPlace(self.rule)
+                boxY = boxY + 1
+                boxX = min(boxX, len(re.compile('[^*]').split(''.join(tile[posX:]))[0]))
+
+        return self.distort((boxX, min(boxY, self.UNIT_MAX_Y)))
+
+    def distort(self, tileSize, factor = 1.6):
+        tileX, tileY = tileSize
+        return (max(min(int(tileX * rand() * factor), tileX), 1),
+                max(min(int(tileY * rand() * factor), tileY), 1))
 
     def fill(self, tileSize):
         posX, posY = self.position 
@@ -53,38 +66,12 @@ class TileBox(object):
     def getTrace(self):
         return self.trace
 
-    def getUnitSize(self, fullSize):
-        relX, relY = fullSize
-        return (round(float(relX) / self.HORIZONTAL), round(float(relY) / self.VERTIVAL))
-
-class TilePlanning(object):
-    def __init__(self, tileSize):
-        self.posX, self.posY = tileSize
-
-        self.RULES = {'RANDOM'       : self.random,
-                      'WEIGHT_SUM'   : self.weightSum,}
-
-        self.SIZE_WEIGHT = 0.8
-
-    def weightSum(self):
-        candidates = [(sizeX + 1, sizeY + 1) for sizeX in range(self.posX) for sizeY in range(self.posY) ]
-        getWeigth  = lambda foo, bar: foo * bar - abs(foo - bar)
-        sortComp   = lambda foo, bar: getWeigth(*bar) - getWeigth(*foo)
-        candidates.sort(sortComp)
-        return choice(candidates[:len(candidates) / 2])
-
-    def random(self):
-        return (randint(1, round(self.posX * self.SIZE_WEIGHT)),
-                randint(1, round(self.posY * self.SIZE_WEIGHT)))
-
-    def doPlace(self, rule):
-        try:
-            return self.RULES[rule]()
-        except:
-            return (1, 1)
+    def getUnitSize(self, canvasSize):
+        canvasX, canvasY = canvasSize 
+        return (canvasX / self.BOUNDARY_X, canvasY / self.BOUNDARY_Y)
 
 if __name__ == '__main__':
-    box = TileBox('WEIGHT_SUM')
+    box = TileBox()
 
     import time
     while not box.checkDone():

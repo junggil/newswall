@@ -21,15 +21,13 @@ class MainPage(webapp.RequestHandler):
 
 class FeedBox(webapp.RequestHandler):
     def post(self):
+        view = TileView()
         rss  = feedparser.parse(self.request.get('rss_feed'))
-        divs = TileView().getDivs()
-        self.response.out.write('<html><body>%(title)s\n' % {'title' : rss.feed.title})
-        for i, div in enumerate(divs):
-            try:
-                self.response.out.write('<div style="%(div)s">%(title)s</div>\n' % {'div' : div, 'title' : rss.entries[i].title})
-            except:
-                self.response.out.write('<div style="%(div)s">%(title)s</div>\n' % {'div' : div, 'title' : 'News-Wall Demo'})
-        self.response.out.write('</body></html>')
+
+        div_template = '<DIV class="box" id="%(id)"s style="%(div)s">%(title)s</DIV>\n'
+        self.response.out.write(view.getTemplate('header'))
+        self.response.out.write(view.getContents(rss.entries))
+        self.response.out.write(view.getTemplate('footer'))
 
 application = webapp.WSGIApplication(
                                      [('/', MainPage),

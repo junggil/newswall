@@ -1,0 +1,23 @@
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.box {
+  padding:5px;
+  border:1px;
+  border-style:solid;
+  border-color:rgba(20, 20, 20, 0.15);
+  background-color:gray;
+  color:white;
+  font-family:"LG Display";     /* NETCAST */
+  font-size:40px;
+  position:absolute;
+}
