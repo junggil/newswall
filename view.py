@@ -3,7 +3,7 @@ import feedparser
 from re     import sub
 from math   import log
 from tile   import TileBox
-from random import randint, choice
+from random import choice
 
 class TileView(object):
     CANVAS = (1280, 720)
@@ -12,7 +12,7 @@ class TileView(object):
     CONF = {
             'border'        : 1, 
             'maxFontSize'   : 400,
-            'minFontSize'   : 8,
+            'minFontSize'   : 10,
             'padding'       : 5
            }
 
@@ -69,7 +69,7 @@ class TileView(object):
         return sub('valign="top"', 'valign="center"', summary)
 
     def removeTail(self, title):
-        return sub('-.*', '', title)
+        return sub(' -.*', '', title)
 
     def getContents(self, feed):
         feedCount  = len(feed)
