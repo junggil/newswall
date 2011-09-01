@@ -27,6 +27,7 @@ a:hover {
   font-family:"LG Display";     /* NETCAST */
   font-size:20px;
   position:absolute;
+  box-shadow:3px 3px 4px #404040;
 }
 
 .newsReader {

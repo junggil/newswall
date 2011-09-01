@@ -1,6 +1,7 @@
 import feedparser
 
 from re     import sub
+from math   import log
 from tile   import TileBox
 from random import randint, choice
 
@@ -10,7 +11,7 @@ class TileView(object):
 
     CONF = {
             'border'        : 1, 
-            'maxFontSize'   : 150,
+            'maxFontSize'   : 400,
             'minFontSize'   : 8,
             'padding'       : 5
            }
@@ -31,7 +32,7 @@ class TileView(object):
                               '<SCRIPT type="text/javascript" src="/site_media/js/effects.js"></SCRIPT>'
                               '</HEAD>\n'
                               '<TITLE>NewsMap</TITLE>\n'
-                              '<BODY style="margin:0">\n'
+                              '<BODY style="margin:0" onLoad="timedRefresh(3000)")>\n'
                               '<IFRAME id="articleContainer" onmouseout="hideArticle();" class="newsReader"></IFRAME>\n'
                               '<IMG id="rectangle" src="/site_media/images/rectangle.png" style="display:none; position:absolute;" />\n'
                               '<DIV style="width:1280px; height:720px; overflow:hidden; background-color:black">\n',
@@ -62,21 +63,25 @@ class TileView(object):
         self.unitX, self.unitY = box.getUnitSize(self.CANVAS)
 
     def getFontSize(self, tileSize, textLength):
-        return (float((self.CONF['maxFontSize'] - self.CONF['minFontSize'])) / textLength) * tileSize + self.CONF['minFontSize']
+        return (float((self.CONF['maxFontSize'] - self.CONF['minFontSize'])) / textLength) * log(tileSize) + self.CONF['minFontSize']
     
     def manipulate(self, summary):
         return sub('valign="top"', 'valign="center"', summary)
 
+    def removeTail(self, title):
+        return sub('-.*', '', title)
+
     def getContents(self, feed):
-        feedCount = len(feed)
+        feedCount  = len(feed)
+        themeColor = choice(self.COLORS.keys()) 
         contents = [self.TEMPLATE['title'] % {'id'   : i,
-                                            'color'  : choice(self.COLORS['PINK']),
-                                            'font'   : self.getFontSize(width * height, len(feed[i % feedCount].title)),
+                                            'color'  : choice(self.COLORS[themeColor]),
+                                            'font'   : self.getFontSize(width * height, len(self.removeTail(feed[i % feedCount].title))),
                                             'width'  : width  * self.unitX - (self.CONF['padding'] + self.CONF['border']) * 2,
                                             'height' : height * self.unitY - (self.CONF['padding'] + self.CONF['border']) * 2,
                                             'left'   : left   * self.unitX,
                                             'top'    : top    * self.unitY,
-                                            'title'  : feed[i % feedCount].title,
+                                            'title'  : self.removeTail(feed[i % feedCount].title),
                                             'link'   : feed[i % feedCount].link} + \
                     self.TEMPLATE['detail'] % {'id' : i, 'summary' : self.manipulate(feed[i % feedCount].summary)}
                     for i, ((left, top), (width, height)) in enumerate(self.trace)] 

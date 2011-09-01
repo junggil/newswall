@@ -11,6 +11,10 @@ function setSize(){
 	maxHeight = parseInt(document.getElementById("top_div").style.height);
 }
 
+function timedRefresh(timeoutPeriod) {
+	setTimeout("location.reload(true);",timeoutPeriod);
+}
+
 /**
  * Role: Show an detail article (subject + picture + sentence)
  * Input: 
