@@ -136,7 +136,3 @@ function resizeIF() {
 
 	setTimeout("resizeIF('"+Id+"')", 100);
 }
-
-$(document).ready(function() {
-    setSize();
-});

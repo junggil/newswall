@@ -1,5 +1,6 @@
 import feedparser
 
+from re     import sub
 from tile   import TileBox
 from random import randint, choice
 
@@ -19,7 +20,7 @@ class TileView(object):
                               'style="background-color: %(color)s;font-size:%(font)spx;width:%(width)spx;height:%(height)spx;left:%(left)spx;top:%(top)spx;">'
                               '<A onclick=\'showArticle("%(link)s"); resizeIF();\'>%(title)s</a>'
                               '</DIV>\n',
-                'detail'    : '<DIV id="tile%(id)s_detail" class="box" style="display:none; width:800px; height:400px; background-color:white">'
+                'detail'    : '<DIV id="tile%(id)s_detail" class="box_detail" style="display:none; width:600px; height:300px; background-color:white">'
                               '%(summary)s'
                               '</DIV>\n',
                 'header'    : '<!DOCTYPE html>\n'
@@ -62,6 +63,9 @@ class TileView(object):
 
     def getFontSize(self, tileSize, textLength):
         return (float((self.CONF['maxFontSize'] - self.CONF['minFontSize'])) / textLength) * tileSize + self.CONF['minFontSize']
+    
+    def manipulate(self, summary):
+        return sub('valign="top"', 'valign="center"', summary)
 
     def getContents(self, feed):
         feedCount = len(feed)
@@ -74,7 +78,7 @@ class TileView(object):
                                             'top'    : top    * self.unitY,
                                             'title'  : feed[i % feedCount].title,
                                             'link'   : feed[i % feedCount].link} + \
-                    self.TEMPLATE['detail'] % {'id' : i, 'summary' : feed[i % feedCount].summary}
+                    self.TEMPLATE['detail'] % {'id' : i, 'summary' : self.manipulate(feed[i % feedCount].summary)}
                     for i, ((left, top), (width, height)) in enumerate(self.trace)] 
 
         return ''.join(contents)
