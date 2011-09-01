@@ -21,3 +21,15 @@ a:hover {
   font-size:40px;
   position:absolute;
 }
+
+.newsReader {
+  position:absolute;
+  top:0;
+  left:0;
+  width:1000px;
+  height:700px;
+  display:none;
+  z-index:-15;
+  background-color:white;
+  frameborder:0;
+}
