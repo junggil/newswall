@@ -3,8 +3,8 @@ from random import randint, choice, random as rand
 from pprint import pprint as pp
 
 class TileBox(object):
-    BOUNDARY_X, BOUNDARY_Y = (10, 8)
-    UNIT_MAX_X, UNIT_MAX_Y = ( 4, 3)
+    BOUNDARY_X, BOUNDARY_Y = (9, 8)
+    UNIT_MAX_X, UNIT_MAX_Y = (4, 3)
 
     def __init__(self):
         self.canvas     = [['*'] * self.BOUNDARY_X for ver in range(self.BOUNDARY_Y)]

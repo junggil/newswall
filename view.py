@@ -6,7 +6,7 @@ from tile   import TileBox
 from random import choice
 
 class TileView(object):
-    CANVAS = (1280, 720)
+    CANVAS = (1080, 720)
     BORDER = 1
 
     CONF = {
@@ -35,8 +35,13 @@ class TileView(object):
                               '<BODY style="margin:0" onLoad="timedRefresh(3000)")>\n'
                               '<IFRAME id="articleContainer" onmouseout="hideArticle();" class="newsReader"></IFRAME>\n'
                               '<IMG id="rectangle" src="/site_media/images/rectangle.png" style="display:none; position:absolute;" />\n'
-                              '<DIV style="width:1280px; height:720px; overflow:hidden; background-color:black">\n',
+                              '<DIV style="width:1280px; height:720px; overflow:hidden; background-color:black">'
+                              '<DIV class="navi">\n',
+                'navi'      : '<A href=%(link)s><DIV class="nitem" style="top:%(top)spx; background-color:%(color)s;">%(topic)s</DIV></A>\n',
+                'selected'  : '<DIV class="nitem" style="top:%(top)spx; width:5px; background-color:rgba(255,255,255,0.85);"></DIV>\n',
                 'footer'    : '</DIV>\n' 
+                              '<DIV class="logo" id="big">%(logo)s</DIV>\n'
+                              '<DIV class="logo" id="small" style="top:634px; font-size:24px">%(time)s</DIV>'
                               '</BODY>\n' 
                               '</HTML>\n'
                 }
@@ -49,6 +54,8 @@ class TileView(object):
                'CYAN'    : ['#1A8053', '#0B3925', '#1B8557', '#0D432C', '#13613F', '#17754C'],
                'PURPLE'  : ['#180B38', '#3C1C8D', '#200F4C', '#21104E', '#231153', '#401E95'],
                'PINK'    : ['#9C1F8B', '#420D3B', '#741767', '#8C1C7D', '#54114B', '#7F1971'],
+               'GRAY'    : ['#7A7A7A', '#272727', '#5F5F5F', '#AAAAAA', '#666666', '#3C3C3C'],
+               'ORANGE'  : ['#9B470D', '#662900', '#FF9800', '#F0C4A0', '#C47F4F', '#D55B02'],
               }
 
     def __init__(self):
