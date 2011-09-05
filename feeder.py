@@ -1,5 +1,8 @@
 import feedparser
+
 from random import choice
+from pickle import dump, load
+from time   import time, localtime, asctime
 
 class GoogleNews(object):
     TEMPLATE = 'http://news.google.com/news?pz=1&cf=all&ned=%(territory)s&hl=%(language)s&topic=%(topic)s&output=rss'
@@ -61,17 +64,17 @@ class GoogleNews(object):
         self.locale = locale
         self.topic  = topic
 
-    def checkPickledfeed(self):
+    def checkPickledFeed(self):
         return False
 
     def getRSS(self):
-        if not self.checkPickledfeed():
+        if not self.checkPickledFeed():
             return feedparser.parse(self.TEMPLATE % {'territory' : self.LOCALE[language],
                                                      'language'  : language,
                                                       'topic'    : topic,
                                                      })
     def getTopics(self):
-        return self.FEED_TOPIC.keys()
+        return self.FEED[self.locale]
   
-    def getLocale(self):
-        return self.LOCALE.keys()
+    def getLocales(self):
+        return self.FEED.keys()
