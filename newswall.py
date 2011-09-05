@@ -9,12 +9,15 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 
 class FeedBox(webapp.RequestHandler):
     def get(self):
-        view = TileView()
-        rss  = GoogleNews().getRSS('ko')
+        locale, topic = ('ko', 'POPULAR')
+        viewer = TileView(locale)
+        feeder = GoogleNews(locale)
         div_template = '<DIV class="box" id="%(id)"s style="%(div)s">%(title)s</DIV>\n'
-        self.response.out.write(view.getTemplate('header'))
-        self.response.out.write(view.getContents(rss.entries))
-        self.response.out.write(view.getTemplate('footer'))
+        self.response.out.write(viewer.getTemplate('header'))
+        self.response.out.write(viewer.getContents(feeder.getRSS(topic), topic))
+        self.response.out.write(viewer.getTopics(feeder.getAllTopics()))
+        self.response.out.write(viewer.getLogos())
+        self.response.out.write(viewer.getTemplate('footer'))
 
 application = webapp.WSGIApplication(
                                      [('/', FeedBox)],

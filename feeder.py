@@ -8,7 +8,7 @@ class GoogleNews(object):
     TEMPLATE = 'http://news.google.com/news?pz=1&cf=all&ned=%(territory)s&hl=%(language)s&topic=%(topic)s&output=rss'
     FEED = {
               'ko' : { 
-                       'territory' : 'kr',
+                       'ned'    : 'kr',
                        'topics' : {
                                    'WORLD'        : 'w',
                                    'ECONOMY'      : 'b',
@@ -22,7 +22,7 @@ class GoogleNews(object):
                                   }
                       },
               'us' : { 
-                       'territory' : 'en',
+                       'ned'    : 'en',
                        'topics' : {
                                    'WORLD'        : 'w',
                                    'HEALTH'       : 'm',
@@ -35,7 +35,7 @@ class GoogleNews(object):
                                   }
                       },
               'zh-CN' : { 
-                       'territory' : 'cn',
+                       'ned'    : 'cn',
                        'topics' : {
                                    'ECONOMY'      : 'b',
                                    'SOCIATY'      : 'y',
@@ -48,33 +48,21 @@ class GoogleNews(object):
                       }
             }
 
-    COLOR_MAP = {
-               'BLUE'    : ['WORLD'],
-               'BROWN'   : ['ECONOMY'],
-               'RED'     : ['SOCIATY', 'SCIENCE'],
-               'GREEN'   : ['CULTURE', 'HEALTH'],
-               'CYAN'    : ['POLITICS'],
-               'PINK'    : ['ENTERTAIN'],
-               'PURPLE'  : ['SPORTS'],
-               'GRAY'    : ['TECHNOLOGY'],
-               'ORANGE'  : ['POPULAR', 'SPOTLIGHT'],
-               }
-
-    def __init__(self, locale, topic):
+    def __init__(self, locale):
         self.locale = locale
-        self.topic  = topic
 
     def checkPickledFeed(self):
         return False
 
-    def getRSS(self):
+    def getRSS(self, topic):
         if not self.checkPickledFeed():
-            return feedparser.parse(self.TEMPLATE % {'territory' : self.LOCALE[language],
-                                                     'language'  : language,
-                                                      'topic'    : topic,
-                                                     })
-    def getTopics(self):
-        return self.FEED[self.locale]
+            return feedparser.parse(self.TEMPLATE % {'topic'     : self.FEED[self.locale]['topics'][topic], 
+                                                     'territory' : self.FEED[self.locale]['ned'],
+                                                     'language'  : self.locale,
+                                                     }).entries
+    def getAllTopics(self):
+        return self.FEED[self.locale]['topics']
   
-    def getLocales(self):
+    def getAllLocales(self):
         return self.FEED.keys()
+
