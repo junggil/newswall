@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import feedparser
 
 from re     import sub
@@ -12,7 +13,7 @@ class TileView(object):
 
     CONF = {
             'border'        : 1, 
-            'maxFontSize'   : {'ko' : 400, 'us' : 400, 'zh-CN' : 400 },
+            'maxFontSize'   : {'ko' : 400, 'us' : 400, 'zh-CN' : 250 },
             'minFontSize'   : {'ko' :  10, 'us' :  10, 'zh-CN' :  10 },
             'padding'       : 5,
             'marginTop'     : 24,
@@ -42,7 +43,7 @@ class TileView(object):
                 'topic'     : '<A href=%(link)s><DIV class="nitem" style="top:%(top)spx; background-color:%(color)s;">%(topic)s</DIV></A>\n',
                 'selected'  : '<DIV class="nitem" style="top:%(top)spx; width:5px; background-color:rgba(255,255,255,0.85);"></DIV>\n',
                 'logo'      : '<DIV class="logo" id="big">%(logo)s</DIV>\n',
-                'time'      : '<DIV class="logo" id="small" style="top:634px; font-size:20px">%(time)s</DIV>\n',
+                'time'      : '<DIV class="logo" id="small" style="top:634px; font-size:16px">%(time)s</DIV>\n',
                 'footer'    : '</BODY>\n' 
                               '</HTML>\n'
                 }
@@ -56,19 +57,19 @@ class TileView(object):
                'PURPLE'  : ['#180B38', '#3C1C8D', '#200F4C', '#21104E', '#231153', '#401E95'],
                'PINK'    : ['#9C1F8B', '#420D3B', '#741767', '#8C1C7D', '#54114B', '#7F1971'],
                'GRAY'    : ['#7A7A7A', '#272727', '#5F5F5F', '#AAAAAA', '#666666', '#3C3C3C'],
-               'ORANGE'  : ['#FF8200', '#DE691E', '#FFC846', '#FFBE0A', '#FFA500', '#FFDC3C'],
+               'ORANGE'  : ['#8B5927', '#D77D32', '#D2954F', '#EF904C', '#CDA27D', '#C29F6D'],
               }
 
     COLOR_MAP = {
-               'BLUE'    : ['WORLD'],
-               'BROWN'   : ['ECONOMY'],
-               'RED'     : ['SOCIATY', 'SCIENCE'],
-               'GREEN'   : ['CULTURE', 'HEALTH'],
-               'ORANGE'  : ['POLITICS'],
-               'PINK'    : ['ENTERTAIN'],
-               'PURPLE'  : ['SPORTS'],
-               'GRAY'    : ['TECHNOLOGY'],
-               'CYAN'  : ['POPULAR', 'SPOTLIGHT'],
+               'BLUE'    : ['w'],
+               'BROWN'   : ['b'],
+               'RED'     : ['y', 'm'],
+               'GREEN'   : ['l'],
+               'ORANGE'  : ['p'],
+               'PINK'    : ['e'],
+               'PURPLE'  : ['s'],
+               'GRAY'    : ['t', 'tc', 'snc'],
+               'CYAN'    : ['po', 'ir'],
                }
 
     def __init__(self, locale):
@@ -95,29 +96,35 @@ class TileView(object):
         return sub(' -.*', '', title)
 
     def getContents(self, feed, topic):
+        contents   = ''
         feedCount  = len(feed)
         themeColor = self.getTopicColor(topic)
-        contents = [self.TEMPLATE['title'] % {'id'   : i,
-                                            'color'  : choice(self.COLORS[themeColor]),
-                                            'font'   : self.getFontSize(width * height, len(self.removeTail(feed[i % feedCount].title))),
-                                            'width'  : width  * self.unitX - (self.CONF['padding'] + self.CONF['border']) * 2,
-                                            'height' : height * self.unitY - (self.CONF['padding'] + self.CONF['border']) * 2,
-                                            'left'   : left   * self.unitX,
-                                            'top'    : top    * self.unitY,
-                                            'title'  : self.removeTail(feed[i % feedCount].title),
-                                            'link'   : feed[i % feedCount].link} + \
-                    self.TEMPLATE['detail'] % {'id' : i, 'summary' : self.manipulate(feed[i % feedCount].summary)}
-                    for i, ((left, top), (width, height)) in enumerate(self.trace)] 
 
-        return self.TEMPLATE['body'] % {'contents' : ''.join(contents)}
+        for i, ((left, top), (width, height)) in enumerate(self.trace):
+            contents += self.TEMPLATE['title'] % {'id'   : i,
+                                                'color'  : choice(self.COLORS[themeColor]),
+                                                'font'   : self.getFontSize(width * height, len(self.removeTail(feed[i % feedCount].title))),
+                                                'width'  : width  * self.unitX - (self.CONF['padding'] + self.CONF['border']) * 2,
+                                                'height' : height * self.unitY - (self.CONF['padding'] + self.CONF['border']) * 2,
+                                                'left'   : left   * self.unitX,
+                                                'top'    : top    * self.unitY,
+                                                'title'  : self.removeTail(feed[i % feedCount].title),
+                                                'link'   : feed[i % feedCount].link}
+            contents += self.TEMPLATE['detail'] % {'id' : i, 'summary' : self.manipulate(feed[i % feedCount].summary)}
 
-    def getTopics(self, topics):
-        topics = [self.TEMPLATE['topic'] % {'link'   : '/{0}/{1}'.format(self.locale, topic),
-                                            'top'    : self.CONF['marginTop'] + index * 40,
-                                            'color'  : self.getTopicColor(topic),
-                                            'topic'  : topic } for index, topic in enumerate(topics)]
+        return self.TEMPLATE['body'] % {'contents' : contents}
 
-        return self.TEMPLATE['navi'] % {'topics' : ''.join(topics)}
+    def getTopics(self, topicDic, topicSel):
+        topicMenu = '' 
+        for index, topic in enumerate(topicDic):
+            topicMenu += self.TEMPLATE['topic'] % {'link'   : '/{0}/{1}'.format(self.locale, topic),
+                                                   'top'    : self.CONF['marginTop'] + index * 40,
+                                                   'color'  : self.COLORS[self.getTopicColor(topic)][0],
+                                                   'topic'  : topicDic[topic] } 
+            if topic == topicSel:
+                topicMenu += self.TEMPLATE['selected'] % {'top' : self.CONF['marginTop'] + index * 40} 
+
+        return self.TEMPLATE['navi'] % {'topics' : topicMenu}
 
     def getTopicColor(self, topic):
         for color in self.COLOR_MAP:

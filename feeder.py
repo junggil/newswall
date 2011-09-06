@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import feedparser
 
 from random import choice
@@ -10,40 +11,40 @@ class GoogleNews(object):
               'ko' : { 
                        'ned'    : 'kr',
                        'topics' : {
-                                   'WORLD'        : 'w',
-                                   'ECONOMY'      : 'b',
-                                   'SOCIATY'      : 'y',
-                                   'CULTURE'      : 'l',
-                                   'POLITICS'     : 'p',
-                                   'TECHNOLOGY'   : 't',
-                                   'ENTERTAIN'    : 'e',
-                                   'SPORTS'       : 's',
-                                   'POPULAR'      : 'p'
+                                   'w'  : '국제',
+                                   'b'  : '경제',
+                                   'y'  : '사회',
+                                   'l'  : '문화/생활',
+                                   'p'  : '정치',
+                                   't'  : '정보과학',
+                                   'e'  : '연예',
+                                   's'  : '스포츠',
+                                   'po' : '인기뉴스',
                                   }
                       },
               'us' : { 
                        'ned'    : 'en',
                        'topics' : {
-                                   'WORLD'        : 'w',
-                                   'HEALTH'       : 'm',
-                                   'BUSINESS'     : 'b',
-                                   'ENTERTAIN'    : 'e',
-                                   'TECHNOLOGY'   : 'tc',
-                                   'SCIENCE'      : 'snc',
-                                   'SPORTS'       : 's',
-                                   'SPOTLIGHT'    : 'ir',
+                                  'w'   : 'WORLD',
+                                  'm'   : 'HEALTH',
+                                  'b'   : 'BUSINESS',
+                                  'e'   : 'ENTERTAIN',
+                                  'tc'  : 'TECHNOLOGY',
+                                  'snc' : 'SCIENCE',
+                                  's'   : 'SPORTS',
+                                  'ir'  : 'SPOTLIGHT',
                                   }
                       },
               'zh-CN' : { 
                        'ned'    : 'cn',
                        'topics' : {
-                                   'ECONOMY'      : 'b',
-                                   'SOCIATY'      : 'y',
-                                   'WORLD'        : 'w',
-                                   'TECHNOLOGY'   : 't',
-                                   'ENTERTAIN'    : 'e',
-                                   'SPORTS'       : 's',
-                                   'POPULAR'      : 'p'
+                                   'b'  : '财经',
+                                   'y'  : '社会',
+                                   'w'  : '国际/港台',
+                                   't'  : '科技',
+                                   'e'  : '娱乐',
+                                   's'  : '体育',
+                                   'po' : '热门报道',
                                   }
                       }
             }
@@ -56,7 +57,7 @@ class GoogleNews(object):
 
     def getRSS(self, topic):
         if not self.checkPickledFeed():
-            return feedparser.parse(self.TEMPLATE % {'topic'     : self.FEED[self.locale]['topics'][topic], 
+            return feedparser.parse(self.TEMPLATE % {'topic'     : topic,
                                                      'territory' : self.FEED[self.locale]['ned'],
                                                      'language'  : self.locale,
                                                      }).entries
