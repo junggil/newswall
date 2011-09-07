@@ -67,6 +67,7 @@ class GoogleNews(object):
     def getAllTopics(self):
         return self.FEED[self.locale]['topics']
   
+    @classmethod
     def getAllLocales(self):
         return self.FEED.keys()
 

@@ -43,7 +43,7 @@ class TileView(object):
                 'navi'      : '<DIV class="navi">%(topics)s</DIV>\n',
                 'topic'     : '<A href=%(link)s><DIV class="nitem" style="top:%(top)spx; background-color:%(color)s;">%(topic)s</DIV></A>\n',
                 'selected'  : '<DIV class="nitem" style="top:%(top)spx; width:5px; background-color:rgba(255,255,255,0.85);"></DIV>\n',
-                'language'  : '<DIV class="logo" id="small" style="top:450px; font-size:14px">%(lang)s</DIV>\n',
+                'language'  : '<DIV class="logo" id="small" style="top:540px; font-size:14px">%(lang)s</DIV>\n',
                 'logo'      : '<DIV class="logo" id="big">%(logo)s</DIV>\n',
                 'time'      : '<DIV class="logo" id="GMT" style="top:634px; font-size:16px">%(time)s</DIV>\n',
                 'footer'    : '</BODY>\n' 
@@ -126,14 +126,12 @@ class TileView(object):
             if topic == topicSel:
                 topicMenu += self.TEMPLATE['selected'] % {'top' : self.CONF['marginTop'] + index * 40} 
 
-        return self.TEMPLATE['navi'] % {'topics' : topicMenu}
+        return self.TEMPLATE['navi'] % {'topics' : topicMenu} 
 
-    def getLanguage(self, locales, topic):
-        import logging
-        logging.info(locales)
+    def getLanguage(self, locales):
         language = ['<A href="/%(locale)s/%(topic)s" style="color:%(color)s;">%(lang)s' % {
                                 'locale' : locale, 
-                                'topic'  : topic, 
+                                'topic'  : 'w', 
                                 'color'  : locale == self.locale and '#BAFF1A' or '#FFFFFF',
                                 'lang'   : GoogleNews.getLangFromLocale(locale)}  + '</A>'
                     for locale in locales]
