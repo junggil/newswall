@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import feedparser
 
 from re     import sub

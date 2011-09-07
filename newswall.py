@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import cgi
 
 from tile     import TileBox
@@ -13,7 +12,7 @@ class FeedBox(webapp.RequestHandler):
     def get(self):
         path = urlparse(self.request.uri)[2]
         if path == '/':
-            locale, topic = ('us', 'm')
+            locale, topic = ('ko', 'po')
         else:
             locale, topic = path.split('/')[1:]
 
