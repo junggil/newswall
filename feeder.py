@@ -20,7 +20,8 @@ class GoogleNews(object):
                                    'e'  : u'연예',
                                    's'  : u'스포츠',
                                    'po' : u'인기뉴스',
-                                  }
+                                  },
+                        'lang'  : u'한국어'
                       },
               'us' : { 
                        'ned'    : 'en',
@@ -33,7 +34,8 @@ class GoogleNews(object):
                                   'snc' : u'SCIENCE',
                                   's'   : u'SPORTS',
                                   'ir'  : u'SPOTLIGHT',
-                                  }
+                                  },
+                        'lang'  : u'English'
                       },
               'zh-CN' : { 
                        'ned'    : 'cn',
@@ -45,7 +47,8 @@ class GoogleNews(object):
                                    'e'  : u'娱乐',
                                    's'  : u'体育',
                                    'po' : u'热门报道',
-                                  }
+                                  },
+                        'lang'  : u'中文'
                       }
             }
 
@@ -67,3 +70,6 @@ class GoogleNews(object):
     def getAllLocales(self):
         return self.FEED.keys()
 
+    @classmethod
+    def getLangFromLocale(cls, locale):
+        return cls.FEED[locale]['lang']

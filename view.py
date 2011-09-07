@@ -5,6 +5,7 @@ from math   import log
 from tile   import TileBox
 from random import choice
 from time   import asctime, localtime, time
+from feeder import GoogleNews
 
 class TileView(object):
     CANVAS = (1080, 720)
@@ -12,8 +13,8 @@ class TileView(object):
 
     CONF = {
             'border'        : 1, 
-            'maxFontSize'   : {'ko' : 400, 'us' : 400, 'zh-CN' : 250 },
-            'minFontSize'   : {'ko' :  10, 'us' :  10, 'zh-CN' :  10 },
+            'maxFontSize'   : {'ko' : 300, 'us' : 400, 'zh-CN' : 250 },
+            'minFontSize'   : {'ko' :  13, 'us' :  10, 'zh-CN' :  10 },
             'padding'       : 5,
             'marginTop'     : 24,
            }
@@ -31,18 +32,20 @@ class TileView(object):
                               '<HEAD>\n'
                               '<META http-equiv="Content-Type" content="text/html; utf-8">\n'
                               '<LINK rel="stylesheet" type="text/css" href="/site_media/css/common.css"/>\n'
-                              '<SCRIPT type="text/javascript" src="/site_media/js/effects.js"></SCRIPT>'
+                              '<SCRIPT type="text/javascript" src="/site_media/js/effects.js"></SCRIPT>\n'
+                              '<SCRIPT type="text/javascript" src="/site_media/js/clock.js"></SCRIPT>\n'
                               '</HEAD>\n'
                               '<TITLE>NewsMap</TITLE>\n'
-                              '<BODY style="margin:0" onLoad="timedRefresh(5000)")>\n'
+                              '<BODY style="margin:0" onLoad="worldClockZone()")>\n'
                               '<IFRAME id="articleContainer" onmouseout="hideArticle();" class="newsReader"></IFRAME>\n'
                               '<IMG id="rectangle" src="/site_media/images/rectangle.png" style="display:none; position:absolute;" />\n',
                 'body'      : '<DIV style="width:1280px; height:720px; overflow:hidden; background-color:black">%(contents)s</DIV>\n',
                 'navi'      : '<DIV class="navi">%(topics)s</DIV>\n',
                 'topic'     : '<A href=%(link)s><DIV class="nitem" style="top:%(top)spx; background-color:%(color)s;">%(topic)s</DIV></A>\n',
                 'selected'  : '<DIV class="nitem" style="top:%(top)spx; width:5px; background-color:rgba(255,255,255,0.85);"></DIV>\n',
+                'language'  : '<DIV class="logo" id="small" style="top:450px; font-size:14px">%(lang)s</DIV>\n',
                 'logo'      : '<DIV class="logo" id="big">%(logo)s</DIV>\n',
-                'time'      : '<DIV class="logo" id="small" style="top:634px; font-size:16px">%(time)s</DIV>\n',
+                'time'      : '<DIV class="logo" id="GMT" style="top:634px; font-size:16px">%(time)s</DIV>\n',
                 'footer'    : '</BODY>\n' 
                               '</HTML>\n'
                 }
@@ -124,6 +127,18 @@ class TileView(object):
                 topicMenu += self.TEMPLATE['selected'] % {'top' : self.CONF['marginTop'] + index * 40} 
 
         return self.TEMPLATE['navi'] % {'topics' : topicMenu}
+
+    def getLanguage(self, locales, topic):
+        import logging
+        logging.info(locales)
+        language = ['<A href="/%(locale)s/%(topic)s" style="color:%(color)s;">%(lang)s' % {
+                                'locale' : locale, 
+                                'topic'  : topic, 
+                                'color'  : locale == self.locale and '#BAFF1A' or '#FFFFFF',
+                                'lang'   : GoogleNews.getLangFromLocale(locale)}  + '</A>'
+                    for locale in locales]
+
+        return self.TEMPLATE['language'] % {'lang' : ' | '.join(language)}
 
     def getTopicColor(self, topic):
         for color in self.COLOR_MAP:

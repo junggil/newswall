@@ -295,5 +295,3 @@ function worldClockZone(){
     document.getElementById('GMT').innerHTML = worldClock(0, "Greenwich")
     setTimeout("worldClockZone()", 1000)
 }
-
-worldClockZone();

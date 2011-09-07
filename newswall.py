@@ -22,6 +22,7 @@ class FeedBox(webapp.RequestHandler):
         self.response.out.write(viewer.getTemplate('header'))
         self.response.out.write(viewer.getContents(feeder.getRSS(topic), topic))
         self.response.out.write(viewer.getTopics(feeder.getAllTopics(), topic))
+        self.response.out.write(viewer.getLanguage(feeder.getAllLocales(), topic))
         self.response.out.write(viewer.getLogos())
         self.response.out.write(viewer.getTemplate('footer'))
 
