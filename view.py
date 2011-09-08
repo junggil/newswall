@@ -119,7 +119,7 @@ class TileView(object):
     def getTopics(self, topicDic, topicSel):
         topicMenu = '' 
         for index, topic in enumerate(topicDic):
-            topicMenu += self.TEMPLATE['topic'] % {'link'   : '/{0}/{1}'.format(self.locale, topic),
+            topicMenu += self.TEMPLATE['topic'] % {'link'   : '/%(locale)s/%(topic)s' % {'locale' : self.locale, 'topic' : topic},
                                                    'top'    : self.CONF['marginTop'] + index * 40,
                                                    'color'  : self.COLORS[self.getTopicColor(topic)][0],
                                                    'topic'  : topicDic[topic] } 
